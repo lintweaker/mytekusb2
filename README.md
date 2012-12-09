@@ -11,6 +11,8 @@ driver not usable for the Mytek have been removed.
 Current features:
 - automatic firmware loading (see FIRMWARE and ISSUES)
 - playback at 24 and 32-bit, samplerates from 44.1k to 192.0k
+- This driver is tested with the Mytek DAC running firmware 1.7.1
+- Do not forget to switch the Mytek to 'USB2' input!
 
 Notes:
 - DoP (DSD over PCM) works using MPD 0.17 or higher
@@ -21,6 +23,15 @@ Tested on:
   including Fedora based Vortexbox 2.2
 - Tested on a ARM based cubox running Fedora 17 hardfp
 
+Verify:
+- To verify that the driver is loaded and running properly you can check with
+  ALSA tool 'aplay'.
+
+Output for 'aplay -l' [Mytek is the second audio interface in this example]:
+
+card 1: USB2 [Mytek Stereo192-DSD USB2], device 0: MytekUSB2 [Mytek USB2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
 The driver needs three pieces of firmware to operate, see FIRMWARE for details.
 See ISSUES for current issues and INSTALL for installation guidelines.
