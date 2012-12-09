@@ -1,0 +1,34 @@
+ISSUES - Known issues for the Mytek USB2 driver snd-usb-mytek
+Last updated 9-Dec-2012 - Jurgen Kramer
+
+
+1 - When I turn on the Mytek no ALSA device appears
+On some systems there are some reliability problems when it comes to
+automatically loading all three pieces of firmware.
+After each piece of firmware is loaded the Mytek disconnects from the USB bus
+and reconnects again. After reconnecting the 'snd-usb-mytek' kernel module should
+be called again so the firmware loading can continue.
+Unfortunately on some systems this seems problematic and loading stops.
+
+2 - Firmware does not load properly
+Depending on your software environment (udev, pulseaudio etc) and kernel you are running,
+you may experience problems loading the needed three levels of firmware into the Mytek.
+If the Mytek is initialised properly it will display '88.2' on its display (*1).
+
+First check with dmesg to see if there are no messages about missing firmware. Next,
+as a workaround execute a sequence of 'rmmod snd-usb-mytek' followed by a
+'modprobe snd-usb-mytek' as root.
+
+3 - Already initialised Mytek needs powercycle
+If the Mytek has been initialised by another system (by connecting the USB2),
+the driver may tell you to power cycle the device. If so, turn off the Mytek and turn
+it back on before connecting it.
+
+4- The Mytek does not show up when I issue 'aplay -L'
+This will need ALSA configuration changes and/or driver changes. Will be fixed
+in a future update.
+
+
+(*1) If pulseaudio is running on your system it will likely set the Mytek to
+44.1k.
+

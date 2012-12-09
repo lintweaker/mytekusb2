@@ -1,0 +1,49 @@
+INSTALL - install guidelines for the snd-usb-mytek
+
+
+-- Prerequisites
+- kernel headers for current running kernel
+- gcc, make etc. for compiling
+
+
+-- Building the kernel module snd-usb-mytek
+
+
+* 32-bit Fedora (based) systems:
+
+Install prerequisites:
+
+$ su -c 'yum install kernel-PAE-devel gcc make'
+
+* 64-bit Fedora (based) systems:
+
+Install prerequisites:
+
+$ su -c 'yum install kernel-devel gcc make'
+
+
+* Debian/Ubuntu:
+
+Install prerequisites:
+
+sudo apt-get install linux-headers-$(uname -r)
+
+
+Compile kernel module:
+
+excute make (as normal user)
+
+$ make
+
+Install the kernel module:
+
+$ su -c 'make install'
+
+or
+
+$ sudo make install
+
+If not already installed, install the needed firmware pieces (see FIRMWARE).
+The kernel module will be loaded automatically when you switch on the Mytek or
+plug in the USB cable using the USB2 connector on the Mytek.
+
