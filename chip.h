@@ -4,7 +4,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: Dec 12, 2012
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,6 +14,12 @@
  */
 #ifndef MYTEK_CHIP_H
 #define MYTEK_CHIP_H
+
+#include "version.h"
+
+#ifndef KERNEL_VERSION
+#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
+#endif
 
 #include "common.h"
 

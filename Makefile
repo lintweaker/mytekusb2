@@ -4,7 +4,13 @@ snd-usb-mytek-objs += chip.o comm.o control.o firmware.o pcm.o
 FW_PATH=/lib/firmware
 FW_MYTEK_PATH=$(FW_PATH)/mytek
 
+VERSION=$(shell uname -r|cut -d. -f1)
+PATCHLEVEL=$(shell uname -r|cut -d. -f2)
+
+KERNEL_VERSION=$(shell echo $(VERSION)*65536+$(PATCHLEVEL)*256|bc)
+
 all:
+	@echo "#define LINUX_VERSION_CODE $(KERNEL_VERSION)" > version.h
 	make CONFIG_DEBUG_SECTION_MISMATCH=y -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:

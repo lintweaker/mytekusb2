@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: Dec 12, 2012
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -200,8 +200,6 @@ static struct usb_device_id device_table[] = {
 	{}
 };
 
-MODULE_DEVICE_TABLE(usb, device_table);
-
 static struct usb_driver usb_driver = {
 	.name = "snd-usb-mytek",
 	.probe = mytek_chip_probe,
@@ -209,4 +207,24 @@ static struct usb_driver usb_driver = {
 	.id_table = device_table,
 };
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 3, 0)
+static int __init mytek_chip_init(void) {
+
+	return usb_register(&usb_driver);
+}
+
+static void __exit mytek_chip_exit(void) {
+
+	usb_deregister(&usb_driver);
+}
+#endif
+
+MODULE_DEVICE_TABLE(usb, device_table);
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 3, 0)
+#pragma message ("Build for kernel older then version 3.3")
+module_init(mytek_chip_init);
+module_exit(mytek_chip_exit);
+#else
 module_usb_driver(usb_driver);
+#endif
