@@ -4,7 +4,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: May 27, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -70,7 +70,7 @@ struct pcm_runtime {
 	bool stream_wait_cond;
 };
 
-int __devinit mytek_pcm_init(struct sfire_chip *chip);
+int mytek_pcm_init(struct sfire_chip *chip);
 void mytek_pcm_abort(struct sfire_chip *chip);
 void mytek_pcm_destroy(struct sfire_chip *chip);
 #endif /* MYTEK_PCM_H */

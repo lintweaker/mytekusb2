@@ -44,7 +44,7 @@ struct control_runtime {
 
 };
 
-int __devinit mytek_control_init(struct sfire_chip *chip);
+int mytek_control_init(struct sfire_chip *chip);
 void mytek_control_abort(struct sfire_chip *chip);
 void mytek_control_destroy(struct sfire_chip *chip);
 #endif /* MYTEK_CONTROL_H */

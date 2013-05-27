@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: May 27, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -140,7 +140,7 @@ static int mytek_control_streaming_update(struct control_runtime *rt)
 	return -EINVAL;
 }
 
-int __devinit mytek_control_init(struct sfire_chip *chip)
+int mytek_control_init(struct sfire_chip *chip)
 {
 	int i;
 	struct control_runtime *rt = kzalloc(sizeof(struct control_runtime),

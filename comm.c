@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: May 27, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -130,7 +130,7 @@ static int mytek_comm_write16(struct comm_runtime *rt, u8 request,
 	return mytek_comm_send_buffer(buffer, rt->chip->dev);
 }
 
-int __devinit mytek_comm_init(struct sfire_chip *chip)
+int mytek_comm_init(struct sfire_chip *chip)
 {
 	struct comm_runtime *rt = kzalloc(sizeof(struct comm_runtime),
 			GFP_KERNEL);

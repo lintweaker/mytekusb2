@@ -4,7 +4,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: May 27, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,6 @@ enum /* firmware state of device */
 	FW_NOT_READY = 1
 };
 
-int __devinit mytek_fw_init(struct usb_interface *intf);
+int mytek_fw_init(struct usb_interface *intf);
 #endif /* MYTEK_FIRMWARE_H */
 

@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: May 27, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -503,7 +503,7 @@ static struct snd_pcm_ops pcm_ops = {
 	.pointer = mytek_pcm_pointer,
 };
 
-static void __devinit mytek_pcm_init_urb(struct pcm_urb *urb,
+static void mytek_pcm_init_urb(struct pcm_urb *urb,
 		struct sfire_chip *chip, bool in, int ep,
 		void (*handler)(struct urb *))
 {
@@ -522,7 +522,7 @@ static void __devinit mytek_pcm_init_urb(struct pcm_urb *urb,
 	urb->instance.number_of_packets = PCM_N_PACKETS_PER_URB;
 }
 
-int __devinit mytek_pcm_init(struct sfire_chip *chip)
+int mytek_pcm_init(struct sfire_chip *chip)
 {
 	int i;
 	int ret;
