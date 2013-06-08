@@ -1,5 +1,5 @@
 FIRMWARE - Mytek Digital Stereo192-DSD DAC using the USB2 interface
-Last updated: 07-dec-2012 Jurgen Kramer
+Last updated: 08-Jun-2013 Jurgen Kramer
 
 When using the USB2 interface on the Mytek three pieces of firmware need to be 
 uploaded to the device. These can be extracted from the Winwows driver.
@@ -10,9 +10,9 @@ go to the Mytek Digital website: http://www.mytekdigital.com/
 Click 'High Fidelity'
 Scroll to 'Support & Downloads' and click on 'Latest Drivers (OS X and Windows)'
 
-This will download the file 'Mytek_Stereo192_DSD_DAC_drivers.zip'.
-Extract using unzip and locate the file 'stereo192-dsd_dac_usb_driver_win_v1.33.10.zip'.
-Unzip it and locate the following files:
+This will download the file 'mytek_v1.34.10_setup.zip'.
+Extract using unzip and enter directory 'mytek_v.1.34.10_setup'.
+Locate the needed files:
 
 - mytekl2.ihx
 - mytekcf.bin
@@ -28,9 +28,14 @@ So the firmware files need to go to:
 /lib/firmware/mytek
 
 The driver checks the firmware version and currently only supports Windows 
-firmware mentioned above.
+firmware version mentioned above.
 
-To verify, the sha1sums of the supported firmware files are:
+To verify, the sha1sum of USB driver version 1.34.10 for Mytek firmware 1.7.5b1 and up:
+d5d169ce3cbf3ec26815e3d30f392d7ae19575c0  mytekap.ihx
+2418278d7ec8bf9c995639a5fbc4e279fe565e59  mytekcf.bin
+5c57a93d5f9d98df4b2d5ad55ed9503828d1473c  mytekl2.ihx
+
+For Mytek firmware 1.7.1, the sha1sums of the supported 1.33.10 firmware files are:
 
 b5a423b812f902c98137c8702e26cb7b80ebc759  mytekap.ihx
 ffd9b7d4a5077ff52695bfef2ff57b38b66ce744  mytekcf.bin
