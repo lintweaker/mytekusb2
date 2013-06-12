@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: 8 June, 2013
+ * Last updated		: 12 June, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -422,8 +422,12 @@ int mytek_fw_init(struct usb_interface *intf)
 			return ret;
 
 		state = buffer[0];
-		if (state == 0)
+		if (state == 0) {
+			/* print firmware level */
+			snd_printk(KERN_INFO PREFIX "Mytek USB firmware %d.%d.%d loaded.\n",
+				   buffer[4], buffer[5], buffer[6]);
 			return FW_READY;
+		}
 		snd_printk(KERN_ERR PREFIX "Pre-initialised Mytek with missing FPGA firmware, please cycle its power\n");
 		return -EIO;
 
