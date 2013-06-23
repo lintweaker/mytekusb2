@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: May 27, 2013
+ * Last updated		: June 23, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -389,13 +389,13 @@ static int mytek_pcm_close(struct snd_pcm_substream *alsa_sub)
 static int mytek_pcm_hw_params(struct snd_pcm_substream *alsa_sub,
 		struct snd_pcm_hw_params *hw_params)
 {
-	return snd_pcm_lib_malloc_pages(alsa_sub,
+	return snd_pcm_lib_alloc_vmalloc_buffer(alsa_sub,
 			params_buffer_bytes(hw_params));
 }
 
 static int mytek_pcm_hw_free(struct snd_pcm_substream *alsa_sub)
 {
-	return snd_pcm_lib_free_pages(alsa_sub);
+	return snd_pcm_lib_free_vmalloc_buffer(alsa_sub);
 }
 
 static int mytek_pcm_prepare(struct snd_pcm_substream *alsa_sub)
@@ -501,6 +501,8 @@ static struct snd_pcm_ops pcm_ops = {
 	.prepare = mytek_pcm_prepare,
 	.trigger = mytek_pcm_trigger,
 	.pointer = mytek_pcm_pointer,
+	.page = snd_pcm_lib_get_vmalloc_page,
+	.mmap = snd_pcm_lib_mmap_vmalloc,
 };
 
 static void mytek_pcm_init_urb(struct pcm_urb *urb,
@@ -563,10 +565,6 @@ int mytek_pcm_init(struct sfire_chip *chip)
 	strcpy(pcm->name, "Mytek USB2");
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_ops);
 
-	ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
-			SNDRV_DMA_TYPE_CONTINUOUS,
-			snd_dma_continuous_data(GFP_KERNEL),
-			MAX_BUFSIZE, MAX_BUFSIZE);
 	if (ret) {
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX

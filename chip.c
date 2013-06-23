@@ -6,7 +6,7 @@
  * Based on 6fire usb driver by Torsten Schenk
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: May 27, 2013
+ * Last updated		: June 23, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 MODULE_AUTHOR("Jurgen Kramer <gtmkramer@xs4all.nl>");
 MODULE_DESCRIPTION("Mytek Digital Stereo192-DSD DAC USB2 audio driver");
 MODULE_LICENSE("GPL v2");
-MODULE_SUPPORTED_DEVICE("{{Mytek Digital, Stereo192-DSD DAC}}");
+MODULE_SUPPORTED_DEVICE("{{Mytek Digital,Stereo192-DSD DAC}}");
 
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for card */
