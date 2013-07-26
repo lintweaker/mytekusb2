@@ -3,10 +3,10 @@
  *
  * Mixer control
  *
- * Based on 6fire usb driver by Torsten Schenk
+ * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: May 27, 2013
+ * Last updated		: July 26, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -140,7 +140,7 @@ static int mytek_control_streaming_update(struct control_runtime *rt)
 	return -EINVAL;
 }
 
-int mytek_control_init(struct sfire_chip *chip)
+int mytek_control_init(struct mytek_chip *chip)
 {
 	int i;
 	struct control_runtime *rt = kzalloc(sizeof(struct control_runtime),
@@ -178,11 +178,11 @@ int mytek_control_init(struct sfire_chip *chip)
 	return 0;
 }
 
-void mytek_control_abort(struct sfire_chip *chip)
+void mytek_control_abort(struct mytek_chip *chip)
 {
 }
 
-void mytek_control_destroy(struct sfire_chip *chip)
+void mytek_control_destroy(struct mytek_chip *chip)
 {
 	kfree(chip->control);
 	chip->control = NULL;

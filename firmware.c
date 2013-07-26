@@ -3,10 +3,10 @@
  *
  * Firmware loader
  *
- * Based on 6fire usb driver by Torsten Schenk
+ * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: 12 June, 2013
+ * Last updated		: July 26, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify

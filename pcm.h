@@ -1,10 +1,10 @@
 /*
  * Linux driver for Mytek Digital Stereo192-DSD DAC USB2
  *
- * Based on 6fire usb driver by Torsten Schenk
+ * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: May 27, 2013
+ * Last updated		: July 26, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@ enum /* settings for pcm */
 };
 
 struct pcm_urb {
-	struct sfire_chip *chip;
+	struct mytek_chip *chip;
 
 	/* BEGIN DO NOT SEPARATE */
 	struct urb instance;
@@ -50,7 +50,7 @@ struct pcm_substream {
 };
 
 struct pcm_runtime {
-	struct sfire_chip *chip;
+	struct mytek_chip *chip;
 	struct snd_pcm *instance;
 
 	struct pcm_substream playback;
@@ -70,7 +70,7 @@ struct pcm_runtime {
 	bool stream_wait_cond;
 };
 
-int mytek_pcm_init(struct sfire_chip *chip);
-void mytek_pcm_abort(struct sfire_chip *chip);
-void mytek_pcm_destroy(struct sfire_chip *chip);
+int mytek_pcm_init(struct mytek_chip *chip);
+void mytek_pcm_abort(struct mytek_chip *chip);
+void mytek_pcm_destroy(struct mytek_chip *chip);
 #endif /* MYTEK_PCM_H */

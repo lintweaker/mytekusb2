@@ -3,10 +3,10 @@
  *
  * Device communications
  *
- * Based on 6fire usb driver by Torsten Schenk
+ * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: May 27, 2013
+ * Last updated		: July 26, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -130,7 +130,7 @@ static int mytek_comm_write16(struct comm_runtime *rt, u8 request,
 	return mytek_comm_send_buffer(buffer, rt->chip->dev);
 }
 
-int mytek_comm_init(struct sfire_chip *chip)
+int mytek_comm_init(struct mytek_chip *chip)
 {
 	struct comm_runtime *rt = kzalloc(sizeof(struct comm_runtime),
 			GFP_KERNEL);
@@ -171,7 +171,7 @@ int mytek_comm_init(struct sfire_chip *chip)
 	return 0;
 }
 
-void mytek_comm_abort(struct sfire_chip *chip)
+void mytek_comm_abort(struct mytek_chip *chip)
 {
 	struct comm_runtime *rt = chip->comm;
 
@@ -179,7 +179,7 @@ void mytek_comm_abort(struct sfire_chip *chip)
 		usb_poison_urb(&rt->receiver);
 }
 
-void mytek_comm_destroy(struct sfire_chip *chip)
+void mytek_comm_destroy(struct mytek_chip *chip)
 {
 	kfree(chip->comm);
 	chip->comm = NULL;

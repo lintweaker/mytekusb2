@@ -1,10 +1,10 @@
 /*
  * Linux driver for Mytek Digital Stereo192-DSD DAC USB2
  *
- * Based on 6fire usb driver by Torsten Schenk
+ * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Dec 9, 2012
+ * Last updated		: July 26, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 #define PREFIX "mytek: "
 
-struct sfire_chip;
+struct mytek_chip;
 struct pcm_runtime;
 struct control_runtime;
 struct comm_runtime;

@@ -506,7 +506,7 @@ static struct snd_pcm_ops pcm_ops = {
 };
 
 static void mytek_pcm_init_urb(struct pcm_urb *urb,
-		struct sfire_chip *chip, bool in, int ep,
+		struct mytek_chip *chip, bool in, int ep,
 		void (*handler)(struct urb *))
 {
 	urb->chip = chip;
@@ -524,7 +524,7 @@ static void mytek_pcm_init_urb(struct pcm_urb *urb,
 	urb->instance.number_of_packets = PCM_N_PACKETS_PER_URB;
 }
 
-int mytek_pcm_init(struct sfire_chip *chip)
+int mytek_pcm_init(struct mytek_chip *chip)
 {
 	int i;
 	int ret;
@@ -577,7 +577,7 @@ int mytek_pcm_init(struct sfire_chip *chip)
 	return 0;
 }
 
-void mytek_pcm_abort(struct sfire_chip *chip)
+void mytek_pcm_abort(struct mytek_chip *chip)
 {
 	struct pcm_runtime *rt = chip->pcm;
 	unsigned long flags;
@@ -601,7 +601,7 @@ void mytek_pcm_abort(struct sfire_chip *chip)
 	}
 }
 
-void mytek_pcm_destroy(struct sfire_chip *chip)
+void mytek_pcm_destroy(struct mytek_chip *chip)
 {
 	kfree(chip->pcm);
 	chip->pcm = NULL;

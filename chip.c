@@ -3,10 +3,10 @@
  *
  * Main routines and module definitions.
  *
- * Based on 6fire usb driver by Torsten Schenk
+ * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: June 23, 2013
+ * Last updated		: July 26, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@ MODULE_SUPPORTED_DEVICE("{{Mytek Digital,Stereo192-DSD DAC}}");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for card */
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP; /* Enable card */
-static struct sfire_chip *chips[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
+static struct mytek_chip *chips[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
 static struct usb_device *devices[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
 
 module_param_array(index, int, NULL, 0444);
@@ -48,7 +48,7 @@ MODULE_PARM_DESC(enable, "Enable the mytek sound device.");
 
 static DEFINE_MUTEX(register_mutex);
 
-static void mytek_chip_abort(struct sfire_chip *chip)
+static void mytek_chip_abort(struct mytek_chip *chip)
 {
 	if (chip) {
 		if (chip->pcm)
@@ -65,7 +65,7 @@ static void mytek_chip_abort(struct sfire_chip *chip)
 	}
 }
 
-static void mytek_chip_destroy(struct sfire_chip *chip)
+static void mytek_chip_destroy(struct mytek_chip *chip)
 {
 	if (chip) {
 		if (chip->pcm)
@@ -84,7 +84,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 {
 	int ret;
 	int i;
-	struct sfire_chip *chip = NULL;
+	struct mytek_chip *chip = NULL;
 	struct usb_device *device = interface_to_usbdev(intf);
 	int regidx = -1; /* index in module parameter array */
 	struct snd_card *card = NULL;
@@ -123,7 +123,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 		return -EIO;
 	}
 	ret = snd_card_create(index[regidx], id[regidx], THIS_MODULE,
-			sizeof(struct sfire_chip), &card);
+			sizeof(struct mytek_chip), &card);
 	if (ret < 0) {
 		snd_printk(KERN_ERR PREFIX "cannot create alsa card.\n");
 		return ret;
@@ -171,7 +171,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 
 static void mytek_chip_disconnect(struct usb_interface *intf)
 {
-	struct sfire_chip *chip;
+	struct mytek_chip *chip;
 	struct snd_card *card;
 
 	chip = usb_get_intfdata(intf);
