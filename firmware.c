@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 26, 2013
+ * Last updated		: July 27, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -361,13 +361,18 @@ int mytek_fw_init(struct usb_interface *intf)
 	struct usb_device *device = interface_to_usbdev(intf);
 	/* buffer: 8 receiving bytes from device and
 	 * sizeof(EP_W_MAX_PACKET_SIZE) bytes for non-const copy */
-	u8 buffer[12];
+	u8 *buffer;
 	u8 state;
+
+	buffer = kzalloc(12, GFP_KERNEL);
+	if (!buffer)
+		return -ENOMEM;
 
 	ret = mytek_fw_ezusb_read(device, 1, 0, buffer, 8);
 	if (ret < 0) {
 		snd_printk(KERN_ERR PREFIX "unable to receive device "
 				"firmware state.\n");
+		kfree(buffer);
 		return ret;
 	}
 	if (buffer[0] != 0xeb || buffer[1] != 0xaa || buffer[2] != 0x55) {
@@ -376,6 +381,7 @@ int mytek_fw_init(struct usb_interface *intf)
 		for (i = 0; i < 8; i++)
 			snd_printk("%02x ", buffer[i]);
 		snd_printk("\n");
+		kfree(buffer);
 		return -EIO;
 	}
 
@@ -384,9 +390,11 @@ int mytek_fw_init(struct usb_interface *intf)
 
 		ret = mytek_fw_ezusb_upload(intf,
 				"mytek/mytekl2.ihx", 0, NULL, 0);
-		if (ret < 0)
+		if (ret < 0) {
+			kfree(buffer);
 			return ret;
-
+		}
+		kfree(buffer);
 		return FW_NOT_READY;
 	}
 	/* do we need fpga firmware and application ezusb firmware? */
@@ -394,41 +402,51 @@ int mytek_fw_init(struct usb_interface *intf)
 
 
 		ret = mytek_fw_check(buffer + 4);
-		if (ret < 0)
+		if (ret < 0) {
+			kfree(buffer);
 			return ret;
-
+		}
 		ret = mytek_fw_fpga_upload(intf, "mytek/mytekcf.bin");
-		if (ret < 0)
+		if (ret < 0) {
+			kfree(buffer);
 			return ret;
+		}
 
 		memcpy(buffer, ep_w_max_packet_size,
 				sizeof(ep_w_max_packet_size));
 		ret = mytek_fw_ezusb_upload(intf, "mytek/mytekap.ihx",
 				0x0003,	buffer, sizeof(ep_w_max_packet_size));
-		if (ret < 0)
+		if (ret < 0) {
+			kfree(buffer);
 			return ret;
+		}
+		kfree(buffer);
 		return FW_NOT_READY;
 	}
 	/* all fw loaded? */
 	else if (buffer[3] == 0x03) {
 
 		ret = mytek_fw_check(buffer + 4);
-		if (ret != 0)
+		if (ret != 0) {
+			kfree(buffer);
 			return ret;
-
+		}
 		/* FW version OK, check FPGA validity */
 		ret = mytek_fw_ezusb_read(device, 2, 0, buffer, 1);
-		if (ret < 0)
+		if (ret < 0) {
+			kfree(buffer);
 			return ret;
-
+		}
 		state = buffer[0];
 		if (state == 0) {
 			/* print firmware level */
 			snd_printk(KERN_INFO PREFIX "Mytek USB firmware %d.%d.%d loaded.\n",
 				   buffer[4], buffer[5], buffer[6]);
+			kfree(buffer);
 			return FW_READY;
 		}
 		snd_printk(KERN_ERR PREFIX "Pre-initialised Mytek with missing FPGA firmware, please cycle its power\n");
+		kfree(buffer);
 		return -EIO;
 
 	/* unknown data? */
@@ -438,9 +456,10 @@ int mytek_fw_init(struct usb_interface *intf)
 		for (i = 0; i < 8; i++)
 			snd_printk("%02x ", buffer[i]);
 		snd_printk("\n");
+		kfree(buffer);
 		return -EIO;
 	}
-
+	kfree(buffer);
 	return 0;
 }
 

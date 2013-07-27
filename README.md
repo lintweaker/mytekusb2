@@ -11,7 +11,7 @@ driver not usable for the Mytek have been removed.
 Current features:
 - automatic firmware loading (see FIRMWARE and ISSUES)
 - playback at 24 and 32-bit, samplerates from 44.1k to 192.0k
-- This driver is tested with the Mytek DAC running firmware 1.7.1
+- This driver is tested with the Mytek DAC running firmware 1.7.1 and 1.7.5.5
 - Do not forget to switch the Mytek to 'USB2' input!
 
 Notes:
@@ -19,9 +19,10 @@ Notes:
 - No mixer support as Mytek has no mixer controlable via USB
 
 Tested on:
-- Various x86 and x86_64 systems running a recent version of Fedora
+- Various x86 and x86_64 systems running recent versions of Fedora (>= 17)
   including Fedora based Vortexbox 2.2
-- Tested on a ARM based cubox running Fedora 17 hardfp
+- Tested on a ARM based Cubox running Fedora 17 hardfp
+- Tested on ARM with Wandboard Dual and Wandboard Quad running Community SqueezeOS
 
 Verify:
 - To verify that the driver is loaded and running properly you can check with
