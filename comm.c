@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 26, 2013
+ * Last updated		: August 7, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -103,7 +103,13 @@ static int mytek_comm_send_buffer(u8 *buffer, struct usb_device *dev)
 static int mytek_comm_write8(struct comm_runtime *rt, u8 request,
 		u8 reg, u8 value)
 {
-	u8 buffer[13];		/* 13: maximum length of message */
+	u8 *buffer;
+	int ret;
+
+	/* 13: maximum length of message */
+	buffer = kmalloc(13, GFP_KERNEL);
+	if (!buffer)
+		return -ENOMEM;
 
 	mytek_comm_init_buffer(buffer, rt->cmdid, request, reg, value, 0x00);
 
@@ -112,13 +118,22 @@ static int mytek_comm_write8(struct comm_runtime *rt, u8 request,
 	else
 		rt->cmdid = rt->cmdid+1;
 
-	return mytek_comm_send_buffer(buffer, rt->chip->dev);
+	ret = mytek_comm_send_buffer(buffer, rt->chip->dev);
+
+	kfree(buffer);
+	return ret;
 }
 
 static int mytek_comm_write16(struct comm_runtime *rt, u8 request,
 		u8 reg, u8 vl, u8 vh)
 {
-	u8 buffer[13]; 		/* 13: maximum length of message */
+	u8 *buffer;
+	int ret;
+
+	/* 13: maximum length of message */
+	buffer = kmalloc(13, GFP_KERNEL);
+	if (!buffer)
+		return -ENOMEM;
 
 	mytek_comm_init_buffer(buffer, rt->cmdid, request, reg, vl, vh);
 
@@ -127,7 +142,10 @@ static int mytek_comm_write16(struct comm_runtime *rt, u8 request,
 	else
 		rt->cmdid = rt->cmdid+1;
 
-	return mytek_comm_send_buffer(buffer, rt->chip->dev);
+	ret = mytek_comm_send_buffer(buffer, rt->chip->dev);
+
+	kfree(buffer);
+	return ret;
 }
 
 int mytek_comm_init(struct mytek_chip *chip)
@@ -139,6 +157,12 @@ int mytek_comm_init(struct mytek_chip *chip)
 
 	if (!rt)
 		return -ENOMEM;
+
+	rt->receiver_buffer = kzalloc(COMM_RECEIVER_BUFSIZE, GFP_KERNEL);
+	if (!rt->receiver_buffer) {
+		kfree(rt);
+		return -ENOMEM;
+	}
 
 	rt->serial = 1;
 	rt->chip = chip;
@@ -163,6 +187,7 @@ int mytek_comm_init(struct mytek_chip *chip)
 	urb->interval = 1;
 	ret = usb_submit_urb(urb, GFP_KERNEL);
 	if (ret < 0) {
+		kfree(rt->receiver_buffer);
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX "cannot create comm data receiver.");
 		return ret;
@@ -181,6 +206,9 @@ void mytek_comm_abort(struct mytek_chip *chip)
 
 void mytek_comm_destroy(struct mytek_chip *chip)
 {
-	kfree(chip->comm);
+	struct comm_runtime *rt = chip->comm;
+
+	kfree(rt->receiver_buffer);
+	kfree(rt);
 	chip->comm = NULL;
 }
