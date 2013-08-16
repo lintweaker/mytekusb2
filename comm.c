@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: August 7, 2013
+ * Last updated		: August 16, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -152,7 +152,7 @@ int mytek_comm_init(struct mytek_chip *chip)
 {
 	struct comm_runtime *rt = kzalloc(sizeof(struct comm_runtime),
 			GFP_KERNEL);
-	struct urb *urb = &rt->receiver;
+	struct urb *urb;
 	int ret;
 
 	if (!rt)
@@ -164,6 +164,7 @@ int mytek_comm_init(struct mytek_chip *chip)
 		return -ENOMEM;
 	}
 
+	urb = &rt->receiver;
 	rt->serial = 1;
 	rt->chip = chip;
 	usb_init_urb(urb);
