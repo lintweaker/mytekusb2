@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 26, 2013
+ * Last updated		: August 16, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -524,6 +524,33 @@ static void mytek_pcm_init_urb(struct pcm_urb *urb,
 	urb->instance.number_of_packets = PCM_N_PACKETS_PER_URB;
 }
 
+static int mytek_pcm_buffers_init(struct pcm_runtime *rt)
+{
+	int i;
+
+	for (i = 0; i < PCM_N_URBS; i++) {
+		rt->out_urbs[i].buffer = kzalloc(PCM_N_PACKETS_PER_URB
+				* PCM_MAX_PACKET_SIZE, GFP_KERNEL);
+		if (!rt->out_urbs[i].buffer)
+			return -ENOMEM;
+		rt->in_urbs[i].buffer = kzalloc(PCM_N_PACKETS_PER_URB
+				* PCM_MAX_PACKET_SIZE, GFP_KERNEL);
+		if (!rt->in_urbs[i].buffer)
+			return -ENOMEM;
+	}
+	return 0;
+}
+
+static void mytek_pcm_buffers_destroy(struct pcm_runtime *rt)
+{
+	int i;
+
+	for (i = 0; i < PCM_N_URBS; i++) {
+		kfree(rt->out_urbs[i].buffer);
+		kfree(rt->in_urbs[i].buffer);
+	}
+}
+
 int mytek_pcm_init(struct mytek_chip *chip)
 {
 	int i;
@@ -534,6 +561,13 @@ int mytek_pcm_init(struct mytek_chip *chip)
 
 	if (!rt)
 		return -ENOMEM;
+
+	ret = mytek_pcm_buffers_init(rt);
+	if (ret) {
+		mytek_pcm_buffers_destroy(rt);
+		kfree(rt);
+		return ret;
+	}
 
 	rt->chip = chip;
 	rt->stream_state = STREAM_DISABLED;
@@ -556,6 +590,7 @@ int mytek_pcm_init(struct mytek_chip *chip)
 	ret = snd_pcm_new(chip->card, "MytekUSB2", 0, 1, 0, &pcm);
 
 	if (ret < 0) {
+		mytek_pcm_buffers_destroy(rt);
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX "cannot create pcm instance.\n");
 		return ret;
@@ -566,6 +601,7 @@ int mytek_pcm_init(struct mytek_chip *chip)
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_ops);
 
 	if (ret) {
+		mytek_pcm_buffers_destroy(rt);
 		kfree(rt);
 		snd_printk(KERN_ERR PREFIX
 				"error preallocating pcm buffers.\n");
@@ -603,6 +639,9 @@ void mytek_pcm_abort(struct mytek_chip *chip)
 
 void mytek_pcm_destroy(struct mytek_chip *chip)
 {
-	kfree(chip->pcm);
+	struct pcm_runtime *rt = chip->pcm;
+
+	mytek_pcm_buffers_destroy(rt);
+	kfree(rt);
 	chip->pcm = NULL;
 }

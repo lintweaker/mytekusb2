@@ -4,7 +4,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 26, 2013
+ * Last updated		: August 16, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,7 +34,7 @@ struct pcm_urb {
 	struct urb instance;
 	struct usb_iso_packet_descriptor packets[PCM_N_PACKETS_PER_URB];
 	/* END DO NOT SEPARATE */
-	u8 buffer[PCM_N_PACKETS_PER_URB * PCM_MAX_PACKET_SIZE];
+	u8 *buffer;
 
 	struct pcm_urb *peer;
 };
