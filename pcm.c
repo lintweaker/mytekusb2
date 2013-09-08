@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: August 16, 2013
+ * Last updated		: August 31, 2013
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -365,7 +365,7 @@ static int mytek_pcm_close(struct snd_pcm_substream *alsa_sub)
 	unsigned long flags;
 
 	if (rt->panic)
-			return 0;
+		return 0;
 
 	mutex_lock(&rt->stream_mutex);
 	if (sub) {
