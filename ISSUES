@@ -1,6 +1,9 @@
 ISSUES - Known issues for the Mytek USB2 driver snd-usb-mytek
-Last updated 9-Dec-2012 - Jurgen Kramer
+Last updated 22-Jan-2014 - Jurgen Kramer
 
+0 - Driver does not work on kernel 3.13
+The current version of the driver does not work with kernel 3.13 and will crash. It should work
+upto the latest 3.12 kernel. Patches are welcome :)!
 
 1 - When I turn on the Mytek no ALSA device appears
 On some systems there are some reliability problems when it comes to
