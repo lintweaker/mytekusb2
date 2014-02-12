@@ -8,8 +8,6 @@ USB2 interface. It is based on the TerraTec DMX 6Fire USB driver by Torsten Sche
 The driver has been tailored to work with the Mytek. All features of the original 
 driver not usable for the Mytek have been removed.
 
-<< URGENT: Driver does not work with kernel 3.13 >>
-
 Current features:
 - automatic firmware loading (see FIRMWARE and ISSUES)
 - playback at 24 and 32-bit, samplerates from 44.1k to 192.0k
