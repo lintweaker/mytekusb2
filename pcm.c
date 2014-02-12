@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: August 31, 2013
+ * Last updated		: February 12, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -269,6 +269,13 @@ static void mytek_pcm_in_urb_handler(struct urb *usb_urb)
 
 	/* setup out urb structure */
 	for (i = 0; i < PCM_N_PACKETS_PER_URB; i++) {
+
+		// FIXME WORKAROUND for USB issues with kernel 3.12.x and later
+		if (in_urb->packets[i].actual_length == 0) {
+			// actual_length should be filled in by the kernel/usb stack
+			in_urb->packets[i].actual_length = 84;
+		}
+
 		out_urb->packets[i].offset = total_length;
 		out_urb->packets[i].length = (in_urb->packets[i].actual_length
 				- 4) / (rt->in_n_analog << 2)
