@@ -15,7 +15,8 @@ Current features:
 - Do not forget to switch the Mytek to 'USB2' input!
 
 Notes:
-- DoP (DSD over PCM) works using MPD 0.17 or higher
+- DoP (DSD over PCM) works using MPD 0.17 or newer and the latest squeezelite
+  versions
 - No mixer support as Mytek has no mixer controlable via USB
 
 Tested on:
