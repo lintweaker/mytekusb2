@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 26, 2013
+ * Last updated		: Feb 28, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -72,7 +72,8 @@ static int mytek_control_set_rate(struct control_runtime *rt, int rate)
 
 	ret = usb_set_interface(device, 1, rates_altsetting[rate]);
 	if (ret < 0) {
-		snd_printk("mytek_control_set_rate: usb_set_interface failed\n");
+		dev_err(&rt->chip->dev->dev,
+			"mytek_control_set_rate: usb_set_interface failed\n");
 		return ret;
 	}
 
@@ -83,7 +84,8 @@ static int mytek_control_set_rate(struct control_runtime *rt, int rate)
 	ret = comm_rt->write16(comm_rt, 0x02, 0x01, rates_mytek_vl[rate],
 			rates_mytek_vh[rate]);
 	if (ret < 0) {
-		snd_printk("mytek_control_set_rate: setting rate failed\n");
+		dev_err(&rt->chip->dev->dev,
+			"mytek_control_set_rate: setting rate failed\n");
 		return ret;
 	}
 

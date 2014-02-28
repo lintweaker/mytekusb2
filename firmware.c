@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 27, 2013
+ * Last updated		: Feb 28, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -221,22 +221,20 @@ static int mytek_fw_ezusb_upload(
 
 	ret = request_firmware(&fw, fwname, &device->dev);
 	if (ret < 0) {
-		
+
 		if (ret == -ENOENT)
-			snd_printk(KERN_ERR PREFIX "Firmware file %s "
-				"not found\n", fwname);			
+			dev_err(&intf->dev, "Firmware file %s not found\n", fwname);
 
 		kfree(rec);
-		snd_printk(KERN_ERR PREFIX "error requesting ezusb "
-				"firmware %s.\n", fwname);
+		dev_err(&intf->dev, "error requesting ezusb firmware %s.\n", fwname);
 		return ret;
 	}
 	ret = mytek_fw_ihex_init(fw, rec);
 	if (ret < 0) {
 		kfree(rec);
 		release_firmware(fw);
-		snd_printk(KERN_ERR PREFIX "error validating ezusb "
-				"firmware %s.\n", fwname);
+		dev_err(&intf->dev,
+			"error validating ezusb firmware %s.\n", fwname);
 		return ret;
 	}
 	/* upload firmware image */
@@ -245,8 +243,9 @@ static int mytek_fw_ezusb_upload(
 	if (ret < 0) {
 		kfree(rec);
 		release_firmware(fw);
-		snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
-				"firmware %s: begin message.\n", fwname);
+		dev_err(&intf->dev,
+				"unable to upload ezusb firmware %s: begin message.\n",
+				fwname);
 		return ret;
 	}
 
@@ -256,8 +255,9 @@ static int mytek_fw_ezusb_upload(
 		if (ret < 0) {
 			kfree(rec);
 			release_firmware(fw);
-			snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
-					"firmware %s: data urb.\n", fwname);
+			dev_err(&intf->dev,
+				"unable to upload ezusb firmware %s: data urb.\n",
+				fwname);
 			return ret;
 		}
 	}
@@ -268,8 +268,9 @@ static int mytek_fw_ezusb_upload(
 	data = 0x00; /* resume ezusb cpu */
 	ret = mytek_fw_ezusb_write(device, 0xa0, 0xe600, &data, 1);
 	if (ret < 0) {
-		snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
-				"firmware %s: end message.\n", fwname);
+		dev_err(&intf->dev,
+			"unable to upload ezusb firmware %s: end message.\n",
+			fwname);
 		return ret;
 	}
 
@@ -292,8 +293,8 @@ static int mytek_fw_fpga_upload(
 
 	ret = request_firmware(&fw, fwname, &device->dev);
 	if (ret < 0) {
-		snd_printk(KERN_ERR PREFIX "unable to get fpga firmware %s.\n",
-				fwname);
+		dev_err(&intf->dev,
+			"unable to get fpga firmware %s.\n", fwname);
 		kfree(buffer);
 		return -EIO;
 	}
@@ -305,8 +306,8 @@ static int mytek_fw_fpga_upload(
 	if (ret < 0) {
 		kfree(buffer);
 		release_firmware(fw);
-		snd_printk(KERN_ERR PREFIX "unable to upload fpga firmware: "
-				"begin urb.\n");
+		dev_err(&intf->dev,
+			"unable to upload fpga firmware: begin urb.\n");
 		return ret;
 	}
 
@@ -318,8 +319,8 @@ static int mytek_fw_fpga_upload(
 		if (ret < 0) {
 			release_firmware(fw);
 			kfree(buffer);
-			snd_printk(KERN_ERR PREFIX "unable to upload fpga "
-					"firmware: fw urb.\n");
+			dev_err(&intf->dev,
+				"unable to upload fpga firmware: fw urb.\n");
 			return ret;
 		}
 	}
@@ -328,8 +329,8 @@ static int mytek_fw_fpga_upload(
 
 	ret = mytek_fw_ezusb_write(device, 9, 0, NULL, 0);
 	if (ret < 0) {
-		snd_printk(KERN_ERR PREFIX "unable to upload fpga firmware: "
-				"end urb.\n");
+		dev_err(&intf->dev,
+			"unable to upload fpga firmware: end urb.\n");
 		return ret;
 	}
 
@@ -339,7 +340,7 @@ static int mytek_fw_fpga_upload(
 /* check, if the firmware version the devices has currently loaded
  * is known by this driver. 'version' needs to have 4 bytes version
  * info data. */
-static int mytek_fw_check(u8 *version)
+static int mytek_fw_check(struct usb_interface *intf, const u8 *version)
 {
 	int i;
 
@@ -347,7 +348,7 @@ static int mytek_fw_check(u8 *version)
 		if (!memcmp(version, known_fw_versions + i, 4))
 			return 0;
 
-	snd_printk(KERN_ERR PREFIX "invalid fimware version in device: %*ph. "
+	dev_err(&intf->dev, "invalid fimware version in device: %*ph. "
 			"please reconnect to power. if this failure "
 			"still happens, check your firmware installation.",
 			4, version);
@@ -370,17 +371,17 @@ int mytek_fw_init(struct usb_interface *intf)
 
 	ret = mytek_fw_ezusb_read(device, 1, 0, buffer, 8);
 	if (ret < 0) {
-		snd_printk(KERN_ERR PREFIX "unable to receive device "
-				"firmware state.\n");
+		dev_err(&intf->dev,
+			"unable to receive device firmware state.\n");
 		kfree(buffer);
 		return ret;
 	}
 	if (buffer[0] != 0xeb || buffer[1] != 0xaa || buffer[2] != 0x55) {
-		snd_printk(KERN_ERR PREFIX "unknown device firmware state "
-				"received from device: ");
+		dev_err(&intf->dev,
+			"unknown device firmware state received from device: ");
 		for (i = 0; i < 8; i++)
-			snd_printk("%02x ", buffer[i]);
-		snd_printk("\n");
+			printk(KERN_CONT "%02x ", buffer[i]);
+		printk(KERN_CONT "\n");
 		kfree(buffer);
 		return -EIO;
 	}
@@ -401,7 +402,7 @@ int mytek_fw_init(struct usb_interface *intf)
 	else if (buffer[3] == 0x02) {
 
 
-		ret = mytek_fw_check(buffer + 4);
+		ret = mytek_fw_check(intf, buffer + 4);
 		if (ret < 0) {
 			kfree(buffer);
 			return ret;
@@ -426,7 +427,7 @@ int mytek_fw_init(struct usb_interface *intf)
 	/* all fw loaded? */
 	else if (buffer[3] == 0x03) {
 
-		ret = mytek_fw_check(buffer + 4);
+		ret = mytek_fw_check(intf, buffer + 4);
 		if (ret != 0) {
 			kfree(buffer);
 			return ret;
@@ -440,22 +441,23 @@ int mytek_fw_init(struct usb_interface *intf)
 		state = buffer[0];
 		if (state == 0) {
 			/* print firmware level */
-			snd_printk(KERN_INFO PREFIX "Mytek USB firmware %d.%d.%d loaded.\n",
+			dev_info(&intf->dev, "Mytek USB firmware %d.%d.%d loaded.\n",
 				   buffer[4], buffer[5], buffer[6]);
 			kfree(buffer);
 			return FW_READY;
 		}
-		snd_printk(KERN_ERR PREFIX "Pre-initialised Mytek with missing FPGA firmware, please cycle its power\n");
+		dev_err(&intf->dev,
+			"Pre-initialised Mytek with missing FPGA firmware, please cycle its power\n");
 		kfree(buffer);
 		return -EIO;
 
 	/* unknown data? */
 	} else {
-		snd_printk(KERN_ERR PREFIX "unknown device firmware state "
-				"received from device: ");
+		dev_err(&intf->dev,
+			"unknown device firmware state received from device: ");
 		for (i = 0; i < 8; i++)
-			snd_printk("%02x ", buffer[i]);
-		snd_printk("\n");
+			printk(KERN_CONT "%02x ", buffer[i]);
+		printk(KERN_CONT "\n");
 		kfree(buffer);
 		return -EIO;
 	}

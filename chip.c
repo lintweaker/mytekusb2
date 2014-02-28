@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Nov 24, 2013
+ * Last updated		: Feb 27, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -103,7 +103,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 	}
 	if (regidx < 0) {
 		mutex_unlock(&register_mutex);
-		snd_printk(KERN_ERR PREFIX "too many cards registered.\n");
+		dev_err(&intf->dev, "too many cards registered.\n");
 		return -ENODEV;
 	}
 	devices[regidx] = device;
@@ -119,13 +119,13 @@ static int mytek_chip_probe(struct usb_interface *intf,
 
 	/* if we are here, card can be registered in alsa. */
 	if (usb_set_interface(device, 0, 0) != 0) {
-		snd_printk(KERN_ERR PREFIX "can't set first interface.\n");
+		dev_err(&intf->dev, "cannot set first interface.\n");
 		return -EIO;
 	}
 	ret = snd_card_create(index[regidx], id[regidx], THIS_MODULE,
 			sizeof(struct mytek_chip), &card);
 	if (ret < 0) {
-		snd_printk(KERN_ERR PREFIX "cannot create alsa card.\n");
+		dev_err(&intf->dev, "cannot create alsa card.\n");
 		return ret;
 	}
 	strcpy(card->driver, "MytekUSB");
@@ -161,7 +161,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 
 	ret = snd_card_register(card);
 	if (ret < 0) {
-		snd_printk(KERN_ERR PREFIX "cannot register card.");
+		dev_err(&intf->dev, "cannot register card.\n");
 		mytek_chip_destroy(chip);
 		return ret;
 	}

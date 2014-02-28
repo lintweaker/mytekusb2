@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: August 16, 2013
+ * Last updated		: Feb 27, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ static void mytek_comm_receiver_handler(struct urb *urb)
 		urb->status = 0;
 		urb->actual_length = 0;
 		if (usb_submit_urb(urb, GFP_ATOMIC) < 0)
-			snd_printk(KERN_WARNING PREFIX
+			dev_warn(&urb->dev->dev,
 					"comm data receiver aborted.\n");
 	}
 }
@@ -190,7 +190,7 @@ int mytek_comm_init(struct mytek_chip *chip)
 	if (ret < 0) {
 		kfree(rt->receiver_buffer);
 		kfree(rt);
-		snd_printk(KERN_ERR PREFIX "cannot create comm data receiver.");
+		dev_err(&chip->dev->dev, "cannot create comm data receiver.\n");
 		return ret;
 	}
 	chip->comm = rt;
