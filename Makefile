@@ -17,6 +17,7 @@ all:
 
 clean:
 	make -C /lib/modules/$(KERNEL_BUILD)/build M=$(PWD) clean
+	rm -rf version.h
 
 install:
 	rm -f /lib/modules/$(KERNEL_BUILD)/extras/snd-usb-mytek.ko
