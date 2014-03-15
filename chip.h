@@ -4,7 +4,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: July 26, 2013
+ * Last updated		: Mar 15, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@ struct mytek_chip {
 	int intf_count; /* number of registered interfaces */
 	int regidx; /* index in module parameter arrays */
 	bool shutdown;
+	bool usbworkaround;
 
 	struct pcm_runtime *pcm;
 	struct control_runtime *control;

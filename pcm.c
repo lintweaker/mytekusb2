@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Feb 28, 2014
+ * Last updated		: Mar 14, 2014
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -274,9 +274,22 @@ static void mytek_pcm_in_urb_handler(struct urb *usb_urb)
 	for (i = 0; i < PCM_N_PACKETS_PER_URB; i++) {
 
 		// FIXME WORKAROUND for USB issues with kernel 3.12.x and later
-		if (in_urb->packets[i].actual_length == 0) {
-			// actual_length should be filled in by the kernel/usb stack
-			in_urb->packets[i].actual_length = 84;
+		if (rt->chip->usbworkaround) {
+			if (in_urb->packets[i].actual_length == 0) {
+				in_urb->packets[i].actual_length = 84;
+				} else {
+					dev_info(&rt->chip->dev->dev,
+					"'usbworkaround' no longer needed. Set to disabled.\n");
+					rt->chip->usbworkaround = false;
+				}
+		} else {
+			// usbworkaround is disabled
+			if (in_urb->packets[i].actual_length == 0) {
+				in_urb->packets[i].actual_length = 84;
+				dev_info(&rt->chip->dev->dev,
+				"'usbworkaround' is disabled but needed. Set to enabled.\n");
+				rt->chip->usbworkaround = true;
+			}
 		}
 
 		out_urb->packets[i].offset = total_length;
@@ -620,6 +633,10 @@ int mytek_pcm_init(struct mytek_chip *chip)
 	}
 	rt->instance = pcm;
 	chip->pcm = rt;
+
+	/* Init USB issue workaround to disabled */
+	chip->usbworkaround = false;
+	dev_info(&rt->chip->dev->dev, "Init 'usbworkaround' to disabled state\n");
 
 	return 0;
 }
