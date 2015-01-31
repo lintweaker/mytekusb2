@@ -122,7 +122,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 		dev_err(&intf->dev, "cannot set first interface.\n");
 		return -EIO;
 	}
-	ret = snd_card_new(index(NULL, index[regidx], id[regidx], THIS_MODULE,
+	ret = snd_card_new(NULL, index[regidx], id[regidx], THIS_MODULE,
 			sizeof(struct mytek_chip), &card);
 	if (ret < 0) {
 		dev_err(&intf->dev, "cannot create alsa card.\n");
