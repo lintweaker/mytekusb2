@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Feb 28, 2014
+ * Last updated		: Jan 31, 2015
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,6 +45,7 @@ static const u8 ep_w_max_packet_size[] = {
 };
 
 static const u8 known_fw_versions[][4] = {
+	{ 0x03, 0x01, 0x23, 0x16 },	/* Windows fw 1.35.22 for Mytek firmware 1.81.1 */
 	{ 0x03, 0x01, 0x22, 0x0a },	/* Windows fw 1.34.10 for Mytek firmware 1.7.5b1 */
 	{ 0x03, 0x01, 0x21, 0x0a }	/* Windows app fw 1.33.10 */
 };
