@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Jan 31, 2015
+ * Last updated		: Sep 17, 2015
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -122,7 +122,7 @@ static int mytek_chip_probe(struct usb_interface *intf,
 		dev_err(&intf->dev, "cannot set first interface.\n");
 		return -EIO;
 	}
-	ret = snd_card_new(NULL, index[regidx], id[regidx], THIS_MODULE,
+	ret = snd_card_new(&intf->dev, index[regidx], id[regidx], THIS_MODULE,
 			sizeof(struct mytek_chip), &card);
 	if (ret < 0) {
 		dev_err(&intf->dev, "cannot create alsa card.\n");
@@ -196,6 +196,11 @@ static struct usb_device_id device_table[] = {
 		.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
 		.idVendor = 0x25ce,
 		.idProduct = 0x000e
+	},
+	{
+		.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+		.idVendor = 0x25ce,
+		.idProduct = 0x0010
 	},
 	{}
 };
