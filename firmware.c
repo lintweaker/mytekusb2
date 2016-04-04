@@ -6,7 +6,7 @@
  * Based on 6fire usb driver
  *
  * Adapted for Mytek by	: Jurgen Kramer
- * Last updated		: Jan 31, 2015
+ * Last updated		: Apr 4, 2016
  * Copyright		: (C) Jurgen Kramer
  *
  * This program is free software; you can redistribute it and/or modify
@@ -314,8 +314,11 @@ static int mytek_fw_fpga_upload(
 
 	while (c != end) {
 		for (i = 0; c != end && i < FPGA_BUFSIZE; i++, c++)
+#ifdef CONFIG_HAVE_ARCH_BITREVERSE
+			buffer[i] = bitrev8((u8) *c);
+#else
 			buffer[i] = byte_rev_table[(u8) *c];
-
+#endif
 		ret = mytek_fw_fpga_write(device, buffer, i);
 		if (ret < 0) {
 			release_firmware(fw);
