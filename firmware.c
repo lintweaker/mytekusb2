@@ -167,10 +167,12 @@ static int mytek_fw_ezusb_write(struct usb_device *device,
 		int type, int value, char *data, int len)
 {
 	int ret;
-
+	char *buffer = kmalloc(len, GFP_DMA); /* required by kernel >= 4.9 */
+	buffer = memcpy(buffer, data, len);
 	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0), type,
 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-			value, 0, data, len, HZ);
+			value, 0, buffer, len, HZ);
+	kfree(buffer);
 	if (ret < 0)
 		return ret;
 	else if (ret != len)
